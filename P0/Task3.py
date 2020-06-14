@@ -43,3 +43,61 @@ Print the answer as a part of a message::
 to other fixed lines in Bangalore."
 The percentage should have 2 decimal digits
 """
+
+import re
+
+def AreaCodeMatch(prefix):
+  return '^\('+prefix+'\)'
+
+def bangalore_area_code(areaCode, number):
+    return re.match(areaCode, number)
+
+def area_code(number):
+    return re.match('^\(.*\)', number)
+
+def mobile_prefix(number):
+    return re.match('^\d{4}', number)
+
+def extract_area_code(number):
+    code = area_code(number) or mobile_prefix(number)
+    return code[0]
+
+def bangalore_outbound_calls(calls):
+    numbers_called = set()
+    from_bangalore_count = 0
+    to_bangalore_count = 0
+
+    for call in calls:
+        caller = call[0]
+        called = call[1]
+        area_Code = AreaCodeMatch('080')
+        if bangalore_area_code(area_Code, caller):
+            # key is called number, value is the caller from bangalore
+            from_bangalore_count += 1
+            numbers_called.add(called)
+
+            if bangalore_area_code(area_Code, called):
+                to_bangalore_count += 1
+
+    percent_within_bangalore = to_bangalore_count / from_bangalore_count
+
+    return numbers_called, percent_within_bangalore
+
+def print_answer():
+    print("The numbers called by people in Bangalore have codes:")
+    codes = set()
+    list_of_calls, percent = bangalore_outbound_calls(calls)
+
+    for number in sorted(list_of_calls):
+        area_code = extract_area_code(number)
+        if area_code not in codes:
+            codes.add(area_code)
+            print(area_code)
+
+    percentage = round(percent * 100, 2)
+
+    print(F"{percentage} percent of calls from fixed lines in Bangalore are calls to other fixed lines in Bangalore.")
+    pass
+
+
+print_answer()

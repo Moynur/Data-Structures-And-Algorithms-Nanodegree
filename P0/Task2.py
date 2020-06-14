@@ -19,4 +19,16 @@ Print a message:
 "<telephone number> spent the longest time, <total time> seconds, on the phone during 
 September 2016.".
 """
+timeDict = {}
+for exchange in calls:
+    if exchange[0] in timeDict:
+        timeDict[exchange[0]] += int(exchange[3])
+    else:
+        timeDict[exchange[0]] = int(exchange[3])
+    if exchange[1] in timeDict:
+        timeDict[exchange[1]] += int(exchange[3])
+    else:
+        timeDict[exchange[1]] = int(exchange[3])
 
+longestTime = max(timeDict,key=lambda x:timeDict[x])
+print(f'{longestTime} spent the longest time, {timeDict[longestTime]} seconds, on the phone during September 2016')
